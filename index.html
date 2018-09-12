@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <ul class="messages"></ul>
+    <form action="#" id="msgForm">
+        <input type="text" name="msg">
+        <button type="submit">Send</button>
+    </form>
+</head>
+<body>
+    <script src="node_modules\socket.io-client\dist\socket.io.js"></script>
+    <script src="jquery-3.3.1.min.js"></script>
+    <script>
+     var socket = io.connect('http://localhost:3000');
+     $('#msgForm').on('submit',function(e){
+           e.preventDefault();
+           data = {};
+           data['message'] = $('input[name="msg"]').val();
+           data['sender'] = 1;
+           data['reciever'] = 2;
+           socket.emit('chat message',data);
+           $('.messages').append('<li style="color:red;">' + data['message'] + '</li>');
+           $('input[name="msg"]').val('');
+           return;
+     });
+
+     socket.on('message',function(response){
+        $('.messages').append('<li style="color:green;">' + response.message + '</li>');
+     });
+
+    </script>
+</body>
+</html>
